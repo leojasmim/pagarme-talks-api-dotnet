@@ -46,6 +46,7 @@ namespace PagarmeTalks.Api
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }

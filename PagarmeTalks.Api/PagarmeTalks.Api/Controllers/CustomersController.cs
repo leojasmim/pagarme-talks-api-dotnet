@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PagarmeTalks.Api.Attributes;
 using PagarmeTalks.Api.Models;
 using PagarmeTalks.Api.Models.Contracts;
 using PagarmeTalks.Api.Models.Entities;
 using PagarmeTalks.Api.Repositories;
-using System;
+using PagarmeTalks.Api.Validators;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PagarmeTalks.Api.Controllers
 {
@@ -52,10 +50,17 @@ namespace PagarmeTalks.Api.Controllers
         [HttpPost]
         public IActionResult Post(CustomerRequest request)
         {
-            if (ModelState.IsValid == false)
-                return BadRequest();
-
             var customer = new Customer(request);
+
+            var validator = new CustomerValidator();
+
+            var results = validator.Validate(customer);
+
+            if (results.IsValid == false)
+            {
+                return BadRequest(new { Error = results.Errors.First().ErrorMessage });
+            }
+
             _customerRepository.Save(customer);
 
             var response = CreateResponse(customer);
@@ -87,14 +92,8 @@ namespace PagarmeTalks.Api.Controllers
 
         private CustomerResponse CreateResponse(Customer customer)
         {
-            return new CustomerResponse()
-            {
-                Id = customer.ExternalId,
-                Name = customer.Name,
-                Email = customer.Email,
-                Document = customer.Document,
-                DocumentType = customer.DocumentType
-            };
+            return new CustomerResponse(customer);
         }
+
     }
 }

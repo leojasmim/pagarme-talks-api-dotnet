@@ -1,20 +1,21 @@
-﻿using System;
+﻿using PagarmeTalks.Api.Models.Entities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PagarmeTalks.Api.Models.Contracts
 {
     public class CustomerRequest
     {
-        [Required]
         public string Name { get; set; }
-        [Required]
         public string Email { get; set; }
-        [Required]
         public string Document { get; set; }
-        [Required]
         public string DocumentType { get; set; }
+        
+        public AccountRequest Account { get; set; }
+        public AddressRequest Address { get; set; }
+        public List<PhoneRequest> Phones { get; set; }
+        public IContact Contact { get; set; }
+
     }
+
 }
